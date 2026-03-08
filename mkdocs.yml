@@ -1,0 +1,54 @@
+site_name: Items API Documentation
+site_description: API REST pour la gestion d'articles
+site_author: Training CI/CD
+site_url: https://votre-username.github.io/training-ci-cd-semantic-release
+
+repo_name: votre-username/training-ci-cd-semantic-release
+repo_url: https://github.com/votre-username/training-ci-cd-semantic-release
+
+theme:
+  name: material
+  palette:
+    - scheme: default
+      primary: indigo
+      accent: indigo
+      toggle:
+        icon: material/brightness-7
+        name: Mode sombre
+    - scheme: slate
+      primary: indigo
+      accent: indigo
+      toggle:
+        icon: material/brightness-4
+        name: Mode clair
+  features:
+    - navigation.instant
+    - navigation.tracking
+    - navigation.tabs
+    - navigation.sections
+    - navigation.expand
+    - search.suggest
+    - search.highlight
+    - content.code.copy
+
+plugins:
+  - search:
+      lang: fr
+  - mkdocstrings:
+      handlers:
+        python:
+          options:
+            show_source: true
+            show_root_heading: true
+            show_category_heading: true
+            docstring_style: google
+
+nav:
+  - Accueil: index.md
+  - Démarrage: getting-started.md
+  - API:
+      - Services: api/services.md
+      - Modèles: api/models.md
+      - Routes: api/routes.md
+  - CI/CD: cicd.md
+  - Changelog: changelog.md
