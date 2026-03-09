@@ -3,7 +3,9 @@ repos:
     rev: v5.0.0
     hooks:
       - id: trailing-whitespace
+        exclude: ^BRIEF_
       - id: end-of-file-fixer
+        exclude: ^BRIEF_
       - id: check-yaml
       - id: check-added-large-files
       - id: detect-private-key
