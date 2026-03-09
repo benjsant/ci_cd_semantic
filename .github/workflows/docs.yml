@@ -1,0 +1,38 @@
+name: Deploy Documentation
+
+on:
+  push:
+    branches: [main]
+  release:
+    types: [published]
+
+permissions:
+  contents: write
+
+jobs:
+  deploy:
+    name: Deploy MkDocs to GitHub Pages
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up uv
+        uses: astral-sh/setup-uv@v4
+        with:
+          enable-cache: true
+          cache-dependency-glob: "uv.lock"
+
+      - name: Install dependencies
+        run: uv sync --all-groups
+
+      - name: Copy CHANGELOG to docs
+        run: |
+          if [ -f CHANGELOG.md ]; then
+            cp CHANGELOG.md docs/changelog.md
+          fi
+
+      - name: Build and deploy documentation
+        run: uv run mkdocs gh-deploy --force

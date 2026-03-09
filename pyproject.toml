@@ -46,7 +46,7 @@ select = [
     "C4", # flake8-comprehensions
     "UP", # pyupgrade
 ]
-ignore = []
+ignore = ["B008"]  # Depends() dans les arguments est le pattern standard FastAPI
 
 [tool.ruff.format]
 quote-style = "double"
@@ -84,8 +84,8 @@ build_command = false
 match = "main"
 prerelease = false
 
-[tool.semantic_release.branches.develop]
-match = "develop"
+[tool.semantic_release.branches.dev]
+match = "dev"
 prerelease = true
 prerelease_token = "rc"
 

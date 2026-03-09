@@ -1,6 +1,5 @@
 """Tests des endpoints CRUD pour les items."""
 
-import pytest
 from fastapi.testclient import TestClient
 
 
