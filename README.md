@@ -4,7 +4,6 @@ API REST CRUD en FastAPI avec PostgreSQL, mise en place dans le cadre d'un proje
 
 ![CI](https://github.com/drawile/ci_cd_semantic/workflows/CI/badge.svg)
 ![Build](https://github.com/drawile/ci_cd_semantic/workflows/Build%20%26%20Push%20Docker%20Image/badge.svg)
-[![pre-commit](https://img.shields.io/badge/pre--commit-enabled-brightgreen?logo=pre-commit)](https://github.com/pre-commit/pre-commit)
 
 ---
 

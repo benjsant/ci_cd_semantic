@@ -1,5 +1,3 @@
-"""Configuration et fixtures partagées pour les tests."""
-
 import os
 from collections.abc import Generator
 
@@ -18,7 +16,7 @@ SQLITE_URL = "sqlite://"
 
 @pytest.fixture(name="session")
 def session_fixture() -> Generator[Session]:
-    """Crée une session de base de données en mémoire pour les tests."""
+    """Session SQLite in-memory pour les tests."""
     test_engine = create_engine(
         SQLITE_URL,
         connect_args={"check_same_thread": False},
@@ -32,8 +30,6 @@ def session_fixture() -> Generator[Session]:
 
 @pytest.fixture(name="client")
 def client_fixture(session: Session) -> Generator[TestClient]:
-    """Crée un client de test FastAPI avec une DB de test."""
-
     def get_db_override() -> Generator[Session]:
         yield session
 

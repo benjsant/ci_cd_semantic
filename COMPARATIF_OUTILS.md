@@ -1,78 +1,78 @@
 # Comparatif des outils
 
-Choix effectués pour ce projet avec justifications.
+Choix faits pour le projet.
 
 ---
 
-## Analyseur de code (linter)
+## Linter
 
-Trois outils principaux existent : **Ruff**, **Flake8** et **Pylint**.
+J'ai regardé **Ruff**, **Flake8** et **Pylint**.
 
-Flake8 a longtemps été la référence — il est extensible via des modules complémentaires (flake8-bugbear, isort...) mais ça implique de gérer plusieurs outils et fichiers de configuration séparés. Pylint est plus complet dans son analyse sémantique mais il est lent et génère beaucoup de faux positifs, ce qui nécessite une configuration longue pour être utilisable.
+Flake8 c'était la ref pendant longtemps, mais faut installer plein de plugins à côté (flake8-bugbear, isort...) et chacun a sa propre config. Pylint est plus poussé dans l'analyse mais il est lent et sort beaucoup de faux positifs, faut passer du temps à configurer pour que ce soit utilisable.
 
-Ruff est écrit en Rust et tourne 10 à 100x plus vite que les deux autres. Il regroupe à lui seul les règles de Flake8, isort, pyupgrade et d'autres. Un seul outil, un seul fichier de configuration dans `pyproject.toml`.
+Ruff c'est écrit en Rust, c'est 10 à 100x plus rapide. Et il regroupe les règles de Flake8, isort, pyupgrade etc. Un seul outil, une seule config dans `pyproject.toml`. Y a pas photo.
 
-**Choix : Ruff.** La vitesse est déterminante en pré-commit et en CI. Le fait de remplacer plusieurs outils par un seul simplifie aussi la maintenance.
+**Choix : Ruff.** Rapide, tout en un, facile à configurer.
 
 ---
 
-## Formateur de code
+## Formateur
 
-**Black** est devenu le standard depuis quelques années — son principe "le formateur qui ne négocie pas" a mis fin aux débats de style en équipe. Le résultat est cohérent même si on n'a presque aucune option de configuration.
+**Black** c'est le formateur "opinionated" qui a un peu standardisé le formatage Python. Tu configures quasi rien, il formate et c'est tout. Ca évite les débats de style en équipe.
 
-**Ruff format** fait la même chose avec les mêmes performances que le linter Ruff, et est compatible à 99% avec Black.
+**Ruff format** fait pareil et est compatible Black à 99%. Comme on utilise déjà Ruff pour le lint autant pas rajouter un outil.
 
-**autopep8** ne fait que corriger les violations PEP 8, ce qui laisse trop de marge pour des styles différents entre développeurs. Il est en perte de vitesse.
+**autopep8** corrige juste les violations PEP 8, c'est trop permissif du coup les devs peuvent quand même avoir des styles différents.
 
-**Choix : Ruff format.** Puisqu'on utilise déjà Ruff pour l'analyse, ajouter Black serait redondant. La compatibilité avec Black garantit qu'une équipe habituée à Black ne verra pas de différence.
+**Choix : Ruff format.** Déjà inclus avec Ruff, compatible Black.
 
 ---
 
 ## Vérificateur de types
 
-**Mypy** est la référence historique du typage statique en Python. Il a le meilleur support de modules complémentaires pour les frameworks (SQLAlchemy, Django, FastAPI) et gère toutes les fonctionnalités du module `typing`.
+**Mypy** c'est la ref pour le typage statique Python. Y a des plugins pour SQLAlchemy, Django etc.
 
-**Pyright** est développé par Microsoft et est intégré dans VS Code via Pylance. Il est plus rapide que Mypy et tout aussi précis, mais son écosystème de modules complémentaires est moins développé.
+**Pyright** c'est celui de Microsoft, intégré dans VS Code via Pylance. Plus rapide que Mypy mais moins de plugins.
 
-**Pyre** vient de Meta, conçu pour de très grandes bases de code. Il est peu utilisé en dehors de Meta et sa documentation est plus limitée.
+**Pyre** c'est Meta, conçu pour du très gros projet. Peu utilisé en dehors.
 
-**Choix : Mypy.** Le support du module complémentaire SQLAlchemy est important ici puisque SQLModel repose dessus. La configuration `ignore_missing_imports = true` évite les faux positifs sur les dépendances sans annotations de types.
-
----
-
-## Cadre de tests
-
-Le choix se pose entre **pytest** et **unittest** (bibliothèque standard).
-
-unittest existe depuis Python 2, son API est calquée sur JUnit (Java) — ça donne des tests verbeux avec `self.assertEqual()`, `self.assertIsNone()`, etc. Les accessoires de test (`setUp`/`tearDown`) sont limités au niveau de la classe.
-
-pytest permet d'écrire `assert x == y` directement, utilise un système d'accessoires de test composables et hiérarchiques (`@pytest.fixture`), et dispose de plus d'un millier de modules complémentaires (couverture, tests asynchrones, parallélisation...).
-
-**Choix : pytest.** C'est le standard actuel dans l'écosystème Python. La lisibilité des tests est bien meilleure et les accessoires de test permettent d'organiser les dépendances proprement (voir `conftest.py`).
+**Choix : Mypy.** Le plugin SQLAlchemy est important vu qu'on utilise SQLModel (qui repose sur SQLAlchemy).
 
 ---
 
-## Analyse de sécurité
+## Tests
 
-Deux angles : le code source et les dépendances.
+**pytest** vs **unittest**.
 
-**Bandit** analyse le code Python à la recherche de patterns dangereux : injections, algorithmes de hachage faibles, secrets en dur, appels système non contrôlés. C'est un outil léger dédié Python.
+unittest c'est dans la stdlib mais l'API est verbeuse (héritage JUnit de Java). Faut faire `self.assertEqual()` partout.
 
-**Safety** vérifie les dépendances déclarées dans `uv.lock` contre une base de données de vulnérabilités connues (CVE). L'option `--continue-on-error` évite de bloquer la CI sur des vulnérabilités non critiques.
+pytest tu fais juste `assert x == y`. Le système de fixtures est bien plus flexible et y a plein de plugins (coverage, async, parallélisation...).
 
-**Snyk** et **Trivy** sont plus complets (conteneurs, infrastructure...) mais surdimensionnés pour ce projet. Snyk est payant pour les dépôts privés.
-
-**Choix : Bandit + Safety.** Les deux couvrent les vecteurs d'attaque principaux sans alourdir la configuration. Trivy pourrait être ajouté au pipeline de construction d'image Docker pour les projets qui en ont besoin.
+**Choix : pytest.** C'est le standard, les tests sont plus lisibles.
 
 ---
 
-## Récapitulatif
+## Sécurité
 
-| Catégorie | Outil retenu | Principale raison |
-|-----------|-------------|-------------------|
-| Analyse de code | Ruff | Vitesse, tout-en-un |
-| Formatage | Ruff format | Déjà inclus, compatible Black |
-| Typage statique | Mypy | Module complémentaire SQLAlchemy |
-| Tests | pytest | Standard actuel, accessoires composables |
-| Sécurité code | Bandit | Dédié Python, léger |
-| Sécurité dépendances | Safety | Vérifie le fichier de verrouillage |
+Deux aspects : le code et les dépendances.
+
+**Bandit** scanne le code Python pour trouver des patterns dangereux (injections, secrets en dur, etc.).
+
+**pip-audit** vérifie les dépendances contre les CVE connues.
+
+**Snyk** et **Trivy** sont plus complets mais overkill pour ce projet. Snyk est payant pour les repos privés.
+
+**Choix : Bandit + pip-audit.** Ca couvre l'essentiel sans compliquer la config.
+
+---
+
+## Récap
+
+| Catégorie | Outil | Raison |
+|-----------|-------|--------|
+| Lint | Ruff | Rapide, tout-en-un |
+| Format | Ruff format | Inclus, compatible Black |
+| Types | Mypy | Plugin SQLAlchemy |
+| Tests | pytest | Standard, fixtures composables |
+| Sécu code | Bandit | Léger, dédié Python |
+| Sécu deps | pip-audit | Vérifie les CVE |

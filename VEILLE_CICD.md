@@ -4,40 +4,44 @@
 
 ## La CI/CD c'est quoi
 
-La CI c'est le fait d'intégrer son code régulièrement dans un dépôt partagé et de déclencher des vérifications automatiques à chaque push : tests, lint, sécurité. L'objectif c'est de trouver les bugs le plus tôt possible, pas lors d'un merge catastrophique trois semaines après.
+En gros la CI (intégration continue) c'est le fait de pousser son code souvent sur un dépôt partagé et qu'à chaque push des vérifs se lancent automatiquement : tests, lint, sécurité etc. Le but c'est de choper les bugs tout de suite, pas 3 semaines après quand on merge et que tout pète.
 
-Deux problèmes concrets que ça résout :
-- "ça marchait sur ma machine" — la CI tourne dans un environnement neutre, pas celui du dev
-- les merges qui partent en vrille — si tout le monde pousse souvent, les branches ne divergent pas pendant des semaines
+Ca résout deux trucs principaux :
+- le fameux "ça marchait sur ma machine" vu que la CI tourne sur un serveur neutre
+- les gros merges galère parce que si tout le monde pousse souvent les branches divergent pas trop
 
-Le CD c'est la suite : soit on est en *livraison continue* (le code est toujours prêt à partir en prod, mais c'est un humain qui décide), soit en *déploiement continu* (ça part automatiquement si les tests passent). La différence c'est surtout le niveau de confiance qu'on a dans sa couverture de tests.
+Le CD c'est la suite logique. Y a deux variantes :
+- **Continuous Delivery** = le code est prêt à partir en prod mais un humain valide avant
+- **Continuous Deployment** = si les tests passent ça part en prod direct, tout seul
 
-Outils qu'on voit souvent : GitHub Actions (c'est ce qu'on utilise ici), GitLab CI, Jenkins (vieux mais encore très présent en entreprise).
+La diff c'est le niveau de confiance dans les tests en fait. Si on a une bonne couverture on peut se permettre le déploiement auto.
 
-L'avantage au quotidien : quand la CI casse, on sait exactement quel commit a tout cassé. On corrige dans la foulée plutôt que de chasser un bug introduit il y a deux semaines.
+Comme outils y a GitHub Actions (c'est ce qu'on utilise), GitLab CI, Jenkins (un peu vieux mais encore beaucoup utilisé en boite), CircleCI...
+
+Le truc bien c'est que quand la CI pète, on sait direct quel commit a cassé. Pas besoin de chercher pendant des heures.
 
 ---
 
 ## uv
 
-uv est un gestionnaire de paquets Python écrit en Rust, développé par Astral (les mêmes que Ruff). Il remplace pip, virtualenv et pip-tools en un seul binaire.
+uv c'est un gestionnaire de paquets Python fait en Rust par Astral (ceux qui font Ruff). Ca remplace pip, virtualenv et pip-tools en un seul outil.
 
-Le gros avantage c'est la vitesse. Sur une CI qui repart de zéro à chaque run, l'installation des dépendances avec pip peut prendre 2-3 minutes. Avec uv et le cache, c'est souvent sous les 10 secondes.
+Le truc c'est que c'est hyper rapide. En CI ou pip peut mettre 2-3 min pour installer les deps, uv le fait en quelques secondes grâce au cache. C'est pas négligeable quand la CI tourne à chaque push.
 
-Il génère un `uv.lock` qui fige les versions exactes de tous les paquets — même principe que `poetry.lock`. Ça garantit que tout le monde installe exactement la même chose, dev comme CI.
+Il génère un fichier `uv.lock` qui fige les versions exactes, un peu comme `poetry.lock`. Comme ça tout le monde a les mêmes versions, que ce soit en dev ou en CI.
 
-Commandes utilisées dans ce projet :
+Les commandes que j'utilise :
 
 ```bash
-uv sync               # installe les dépendances dans .venv/
-uv sync --all-groups  # installe aussi les dépendances de dev
-uv run pytest         # lance une commande dans le venv sans l'activer manuellement
-uv add requests       # ajoute une dépendance et met à jour uv.lock
+uv sync               # install les deps
+uv sync --all-groups  # avec les deps de dev aussi
+uv run pytest         # lance une commande dans le venv
+uv add requests       # ajoute un paquet
 ```
 
-En CI, l'action `astral-sh/setup-uv@v4` gère le cache sur le contenu de `uv.lock` automatiquement.
+En CI on utilise `astral-sh/setup-uv@v4` qui gère le cache automatiquement avec `uv.lock`.
 
-Par rapport à poetry : uv s'appuie sur le format `pyproject.toml` standard (PEP 621) alors que poetry a son propre format de métadonnées. Et uv est nettement plus rapide.
+Comparé à poetry : uv utilise le `pyproject.toml` standard (PEP 621) alors que poetry a son propre format. Et c'est beaucoup plus rapide.
 
 ---
 
@@ -47,27 +51,27 @@ Le format c'est `MAJEUR.MINEUR.CORRECTIF` :
 
 ```
 v2.4.1
-  │ │ └── bug fix sans casser l'existant
-  │ └──── nouvelle fonctionnalité rétrocompatible
-  └────── changement cassant (l'API change)
+  │ │ └── fix sans casser l'existant
+  │ └──── nouvelle feature rétrocompatible
+  └────── changement cassant
 ```
 
-Quand MINEUR monte, CORRECTIF repasse à 0. Quand MAJEUR monte, les deux repassent à 0.
+Quand MINEUR monte, CORRECTIF repasse à 0. Pareil pour MAJEUR.
 
-### Commits conventionnels
+### Conventional Commits
 
-C'est une convention de messages de commit pour permettre l'automatisation du versionnage :
+C'est une convention pour les messages de commit qui permet d'automatiser le versionnage :
 
 ```
-<type>(<portée>): <description>
+<type>(<scope>): <description>
 ```
 
-Ce qui fait évoluer la version :
-- `feat:` → incrément MINEUR
-- `fix:` ou `perf:` → incrément CORRECTIF
-- `feat!:` ou `BREAKING CHANGE:` dans le pied de message → incrément MAJEUR
+Ce qui change la version :
+- `feat:` → bump MINEUR
+- `fix:` ou `perf:` → bump CORRECTIF
+- `feat!:` ou footer `BREAKING CHANGE:` → bump MAJEUR
 
-Le reste (`docs`, `chore`, `ci`, `test`, `refactor`...) ne change pas la version.
+Les autres (`docs`, `chore`, `ci`, `test`...) changent pas la version.
 
 ```bash
 git commit -m "feat(items): add price filter"          # 0.1.0 → 0.2.0
@@ -77,18 +81,18 @@ git commit -m "feat!: redesign API response format"    # 0.2.1 → 1.0.0
 
 ### python-semantic-release
 
-L'outil lit l'historique des commits depuis le dernier tag, calcule le prochain numéro de version, met à jour `pyproject.toml`, génère le `CHANGELOG.md`, crée le tag et publie une release GitHub. Tout ça sans intervention manuelle.
+L'outil lit l'historique des commits depuis le dernier tag, calcule la prochaine version, met à jour `pyproject.toml`, génère le `CHANGELOG.md`, crée le tag et la release GitHub. Tout automatique.
 
-Dans ce projet : `main` → releases stables, `dev` → pré-releases avec suffixe `rc`. La config est dans `pyproject.toml` sous `[tool.semantic_release]`.
+Config dans `pyproject.toml` sous `[tool.semantic_release]`. `main` fait des releases stables, `dev` des pré-releases avec le suffixe `rc`.
 
 ---
 
 ## MkDocs (bonus)
 
-MkDocs convertit des fichiers Markdown en site statique. Avec le module `mkdocstrings`, il génère aussi la doc de l'API depuis les docstrings directement dans le code :
+MkDocs transforme des fichiers Markdown en site web. Avec `mkdocstrings` ça génère aussi la doc API depuis les docstrings du code Python :
 
 ```markdown
 ::: app.services.item_service.ItemService
 ```
 
-Le déploiement sur GitHub Pages se fait avec `mkdocs gh-deploy --force` — ça crée la branche `gh-pages` et GitHub Pages la publie. Dans ce projet c'est automatisé dans `docs.yml` à chaque push sur `main`.
+Le déploiement sur GitHub Pages se fait avec `mkdocs gh-deploy --force`, ça crée une branche `gh-pages` que GitHub publie. C'est automatisé dans le workflow `docs.yml`.
