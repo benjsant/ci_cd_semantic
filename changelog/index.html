@@ -606,6 +606,24 @@
         
       
       
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Changelog
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
       <a href="./" class="md-nav__link md-nav__link--active">
         
   
@@ -622,6 +640,53 @@
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#v001-2026-03-11" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        v0.0.1 (2026-03-11)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="v0.0.1 (2026-03-11)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#bug-fixes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Bug Fixes
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
       
     </li>
   
@@ -647,6 +712,42 @@
     
   
   
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#v001-2026-03-11" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        v0.0.1 (2026-03-11)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="v0.0.1 (2026-03-11)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#bug-fixes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Bug Fixes
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
 </nav>
                   </div>
                 </div>
@@ -665,9 +766,27 @@
   
 
 
-<h1 id="changelog">Changelog</h1>
-<p>Le changelog est généré automatiquement par <strong>python-semantic-release</strong> à chaque release.</p>
-<p>Consultez le fichier <a href="../CHANGELOG.md">CHANGELOG.md</a> pour l'historique complet des versions.</p>
+<h1 id="changelog">CHANGELOG</h1>
+<h2 id="v001-2026-03-11">v0.0.1 (2026-03-11)</h2>
+<h3 id="bug-fixes">Bug Fixes</h3>
+<ul>
+<li>
+<p>Correct semantic release config and sync-develop workflow
+  (<a href="https://github.com/benjsant/ci_cd_semantic/commit/5f6524699a4fafd7dee0c7f019194b6f76848320"><code>5f65246</code></a>)</p>
+</li>
+<li>
+<p>Change build_command from false to empty string (pydantic validation) - Remove deprecated
+  top-level changelog_file - Use GitHub App token in sync-develop to bypass branch protection</p>
+</li>
+<li>
+<p>Resolve merge conflict in sync-develop workflow
+  (<a href="https://github.com/benjsant/ci_cd_semantic/commit/1bd53e022536171bdee816d7848853b3dce4049e"><code>1bd53e0</code></a>)</p>
+</li>
+<li>
+<p>Use GitHub App token in release workflow for branch protection bypass
+  (<a href="https://github.com/benjsant/ci_cd_semantic/commit/e58f15d73b868f561c94bfb8ed9946731ba6186f"><code>e58f15d</code></a>)</p>
+</li>
+</ul>
 
 
 
