@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+    <url>
+         <loc>https://votre-username.github.io/training-ci-cd-semantic-release/</loc>
+         <lastmod>2026-03-11</lastmod>
+    </url>
+    <url>
+         <loc>https://votre-username.github.io/training-ci-cd-semantic-release/changelog/</loc>
+         <lastmod>2026-03-11</lastmod>
+    </url>
+    <url>
+         <loc>https://votre-username.github.io/training-ci-cd-semantic-release/cicd/</loc>
+         <lastmod>2026-03-11</lastmod>
+    </url>
+    <url>
+         <loc>https://votre-username.github.io/training-ci-cd-semantic-release/getting-started/</loc>
+         <lastmod>2026-03-11</lastmod>
+    </url>
+    <url>
+         <loc>https://votre-username.github.io/training-ci-cd-semantic-release/api/models/</loc>
+         <lastmod>2026-03-11</lastmod>
+    </url>
+    <url>
+         <loc>https://votre-username.github.io/training-ci-cd-semantic-release/api/routes/</loc>
+         <lastmod>2026-03-11</lastmod>
+    </url>
+    <url>
+         <loc>https://votre-username.github.io/training-ci-cd-semantic-release/api/services/</loc>
+         <lastmod>2026-03-11</lastmod>
+    </url>
+</urlset>
