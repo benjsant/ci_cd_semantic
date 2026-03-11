@@ -4,9 +4,6 @@ version = "0.1.0"
 description = "CRUD API with PostgreSQL for managing items"
 requires-python = ">=3.13"
 
-# ============================================================================
-# DEPENDENCIES
-# ============================================================================
 dependencies = [
     "fastapi[standard]>=0.121.0",
     "psycopg2-binary>=2.9.11",
@@ -25,36 +22,22 @@ dev = [
     "pytest-cov>=6.0.0",
     "python-semantic-release>=9.15.0",
     "ruff>=0.9.0",
-    "safety>=3.3.0",
+    "pip-audit>=2.7.0",
     "types-psycopg2>=2.9.0",
 ]
 
-# ============================================================================
-# RUFF
-# ============================================================================
 [tool.ruff]
 line-length = 88
 target-version = "py313"
 
 [tool.ruff.lint]
-select = [
-    "E",  # pycodestyle errors
-    "W",  # pycodestyle warnings
-    "F",  # pyflakes
-    "I",  # isort
-    "B",  # flake8-bugbear
-    "C4", # flake8-comprehensions
-    "UP", # pyupgrade
-]
-ignore = []
+select = ["E", "W", "F", "I", "B", "C4", "UP"]
+ignore = ["B008"]
 
 [tool.ruff.format]
 quote-style = "double"
 indent-style = "space"
 
-# ============================================================================
-# MYPY
-# ============================================================================
 [tool.mypy]
 python_version = "3.13"
 warn_return_any = true
@@ -62,18 +45,12 @@ warn_unused_configs = true
 disallow_untyped_defs = true
 ignore_missing_imports = true
 
-# ============================================================================
-# PYTEST
-# ============================================================================
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 python_files = "test_*.py"
 python_functions = "test_*"
 addopts = "--strict-markers --cov=app --cov-report=term-missing"
 
-# ============================================================================
-# SEMANTIC RELEASE
-# ============================================================================
 [tool.semantic_release]
 version_toml = ["pyproject.toml:project.version"]
 branch = "main"
@@ -84,8 +61,8 @@ build_command = false
 match = "main"
 prerelease = false
 
-[tool.semantic_release.branches.develop]
-match = "develop"
+[tool.semantic_release.branches.dev]
+match = "dev"
 prerelease = true
 prerelease_token = "rc"
 

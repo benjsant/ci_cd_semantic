@@ -1,6 +1,6 @@
-"""Configuration et fixtures partagées pour les tests."""
-
 import os
+from collections.abc import Generator
+
 import pytest
 from fastapi.testclient import TestClient
 from sqlmodel import Session, SQLModel, create_engine
@@ -11,12 +11,15 @@ os.environ["DATABASE_URL"] = "postgresql://postgres:postgres@localhost:5432/test
 from app.database import get_db  # noqa: E402
 from app.main import app  # noqa: E402
 
+SQLITE_URL = "sqlite://"
+
 
 @pytest.fixture(name="session")
-def session_fixture():
-    """Crée une session de base de données en mémoire pour les tests."""
+def session_fixture() -> Generator[Session]:
+    """Session SQLite in-memory pour les tests."""
     test_engine = create_engine(
-        os.environ["DATABASE_URL"],
+        SQLITE_URL,
+        connect_args={"check_same_thread": False},
         poolclass=StaticPool,
     )
     SQLModel.metadata.create_all(test_engine)
@@ -26,10 +29,8 @@ def session_fixture():
 
 
 @pytest.fixture(name="client")
-def client_fixture(session: Session):
-    """Crée un client de test FastAPI avec une DB de test."""
-
-    def get_db_override():
+def client_fixture(session: Session) -> Generator[TestClient]:
+    def get_db_override() -> Generator[Session]:
         yield session
 
     app.dependency_overrides[get_db] = get_db_override
