@@ -31,4 +31,13 @@ def root() -> dict:
 
 @app.get("/health")
 def health() -> dict:
-    return {"status": "healthy"}
+    try:
+        from sqlmodel import text
+
+        from app.database import engine
+
+        with engine.connect() as conn:
+            conn.execute(text("SELECT 1"))
+        return {"status": "healthy", "database": "connected"}
+    except Exception:
+        return {"status": "degraded", "database": "disconnected"}
