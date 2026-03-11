@@ -1,6 +1,14 @@
 # CHANGELOG
 
 
+## v0.1.0 (2026-03-11)
+
+### Features
+
+- **api**: Add database health check to /health endpoint
+  ([`3afe1f5`](https://github.com/benjsant/ci_cd_semantic/commit/3afe1f529725fe089151083a7927db31eaee88f3))
+
+
 ## v0.0.1 (2026-03-11)
 
 ### Bug Fixes
