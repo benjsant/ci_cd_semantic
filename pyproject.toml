@@ -54,8 +54,7 @@ addopts = "--strict-markers --cov=app --cov-report=term-missing"
 [tool.semantic_release]
 version_toml = ["pyproject.toml:project.version"]
 branch = "main"
-changelog_file = "CHANGELOG.md"
-build_command = false
+build_command = ""
 
 [tool.semantic_release.branches.main]
 match = "main"
